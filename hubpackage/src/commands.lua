@@ -97,7 +97,7 @@ local function onvif_cmd(sendurl, command, sendbody, authheader)
     local sendheaders = {
 													["Content-Type"] = content_type,
                           ["Host"] = sendurl:match('//([%d.:]+)/'),
-                          ["Acccept"] = 'gzip, deflate',
+                          ["Accept"] = 'gzip, deflate',
                           ["Content-Length"] = #sendbody,
                           ["Connection"] = 'close',
                         }
