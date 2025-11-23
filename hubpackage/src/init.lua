@@ -837,6 +837,10 @@ local function handle_switch(driver, device, command)
   
 end
 
+local function url_encode(str)
+  if not str then return '' end
+  return str:gsub("([^%w%-_%.~])", function(c) return string.format("%%%02X", string.byte(c)) end)
+end
 
 local function handle_stream(driver, device, command)
 
@@ -855,7 +859,9 @@ local function handle_stream(driver, device, command)
     
       if cam_func.stream_uri then
       
-        local build_url = 'rtsp://' .. device.preferences.userid .. ':' .. device.preferences.password .. '@' .. cam_func.stream_uri:match('//(.+)') 
+        local user = url_encode(device.preferences.userid)
+        local pass = url_encode(device.preferences.password)
+        local build_url = 'rtsp://' .. user .. ':' .. pass .. '@' .. cam_func.stream_uri:match('//(.+)')
         log.debug ('Providing stream URL to SmartThings:', cam_func.stream_uri)
         live_video.InHomeURL = build_url
         --live_video.OutHomeURL = build_url
