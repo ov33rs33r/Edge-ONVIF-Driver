@@ -1130,7 +1130,7 @@ local function PullMessages(device, event_serviceURI)
       <tet:Timeout>PT1H</tet:Timeout>
       <tet:MessageLimit>30</tet:MessageLimit>
     </tet:PullMessages>
-  <s:Body>
+  </s:Body>
 </s:Envelope>
 ]]
 
