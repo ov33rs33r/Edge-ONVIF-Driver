@@ -479,7 +479,7 @@ local function shutdownserver(driver, device)
 	if eventserver then
 		--eventserver.eventing_thread:unregister_socket(eventserver.sock)
 		--device.thread:unregister_socket(eventserver.sock)
-		shutdown = true
+		eventserver.shutdown = true
 		eventserver.sock:close()
 		eventserver.eventing_thread:close()
 		if eventserver.renew_timer then
