@@ -31,9 +31,6 @@ local common = require "common"
 
 local initflag = false
 local eventservers = {}
-local shutdown = false
-
-local eventing_thread
 
 local DEFAULT_SUBSCRIBE_DURATION = 14400		
 local REOLINK_ID = 'IPC-BO'
@@ -220,10 +217,10 @@ local function init(driver, eventserver)
 			eventserver.eventing_thread = Thread.Thread(driver, 'event server thread')
 		end
   
-		shutdown = false
+		eventserver.shutdown = false
 		
 		cosock.spawn(function()
-				while shutdown == false do
+				while eventserver.shutdown == false do
 					eventaccept_handler(eventserver.sock)
 				end	
 			end)
