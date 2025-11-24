@@ -118,19 +118,19 @@ local function parse(data)
 	  for addr in service_addrs:gmatch('[^ ]+') do
 	  
 	    -- Address format possibilities:
-	    --  IPV4: http://192.168.0.64/onvif/device_service
+	    --  IPV4/HTTPS: http://192.168.0.64/onvif/device_service or https://192.168.0.64/onvif/device_service
 	    --  IPV6: http://[fe80::66db:8bff:fe61:56da]/onvif/device_service
 	    --  hostname:  http://AminDSNEW:5357/a0d7119e-8b35-42a2-8db9-d7a26ab0b761
 	  
-	    -- is it an IPV4 address?
-	    local ipv4 = addr:match('^(http://)([%d%.:]+)/')
+	    -- is it an IPV4 address (http/https)?
+	    local ipv4 = addr:match('^(https?://)([%d%.:]+)/')
 	    if ipv4 then
 	      metadata.uri.device_service = addr
 	      break
 	    end
 	    
-	    -- is it a host name?
-	    local hostname = addr:match('^(http://)([%w:]+)/')
+	    -- is it a host name (http/https)?
+	    local hostname = addr:match('^(https?://)([%w:]+)/')
 	    if hostname then
 	      metadata.uri.device_service = addr
 	      break
@@ -230,6 +230,11 @@ local function discover (waitsecs, callback, reset)
 	local cam_meta = parse(data)
 	
 	if cam_meta then
+	
+	  if not (cam_meta.uri and cam_meta.uri.device_service) then
+	    log.warn ('Ignoring discovery response without usable device service URI')
+	    return
+	  end
 	
 	  local streamprofile
 	  for _, profile in ipairs(cam_meta.profiles) do
