@@ -307,6 +307,12 @@ local function get_cam_config(device)
   log.info('Starting Device Initialization routine for', device.label)
   
   local meta = device:get_field('onvif_disco')
+  if not meta or not meta.uri or not meta.uri.device_service then
+    log.error('Cannot initialize: persistent ONVIF discovery info missing')
+    discover.schedule_rediscover(onvifDriver, device, 5, init_device)
+    return false
+  end
+
   if meta then
     
     local infolist = init_infolist(device, meta)
@@ -923,6 +929,9 @@ local function device_added (driver, device)
       ipcam.discotype = 'manual'
       device:set_field('onvif_disco', ipcam, {['persist'] = true })
     end
+  else
+    log.warn('IPCam meta data not found; scheduling rediscover', device.label)
+    discover.schedule_rediscover(onvifDriver, device, 5, init_device)
   end
     
   if ipcam ~= nil then
